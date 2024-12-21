@@ -65,3 +65,38 @@ export async function deleteWorkflow(workflowId: string) {
 
   revalidatePath('/workflows');
 }
+
+export async function updateWorkflow({
+  id,
+  definition,
+}: {
+  id: string;
+  definition: string;
+}) {
+  const { userId } = auth();
+  if (!userId) throw new Error('Unauthorized: userId is missing');
+
+  const workflow = await prisma.workflow.findUnique({
+    where: {
+      id,
+      userId,
+    },
+  });
+
+  if (!workflow) throw new Error('Workflow not found');
+
+  if (workflow.status !== WorkflowStatus.DRAFT)
+    throw new Error('Workflow is not a draft');
+
+  await prisma.workflow.update({
+    where: {
+      id,
+      userId,
+    },
+    data: {
+      definition,
+    },
+  });
+
+  revalidatePath('/workflows');
+}

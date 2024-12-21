@@ -14,7 +14,7 @@ const NotFound = () => {
           internet.
         </p>
 
-        <Link href="/dashboard">
+        <Link href="/">
           <Button>
             <ArrowLeft className="size-4" />
             Back to dashboard
